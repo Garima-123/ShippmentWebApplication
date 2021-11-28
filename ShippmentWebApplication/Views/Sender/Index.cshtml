@@ -18,18 +18,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.bundle.js'></script> <script>
-        var form = document.getElementById("formAwesome");
-        form.addEventListener("submit", onSubmitForm);
-
-        function onSubmitForm(e) {
-            e.preventDefault();
-            $('#formModal').modal('hide');
-            $('#btnStart').hide();
-            $('#message').show();
-        }
-    </script>
- 
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.bundle.js'></script> 
+        
+    
 </head>
 <body>
 
@@ -38,9 +29,12 @@
             <div class="panel-heading" style="text-align:center"><h2>Shipment List</h2>
                 </div>
             <div class="panel-body">
-                <div style="float:right;padding-bottom: 10px"><button id="btnStart" type="button" data-toggle="modal" data-target="#formModal" class="btn btn-success">Create Shipment</button></div>
-                <table class="table table-hover table-responsive">
+                <div style="float:right;padding-bottom: 10px"><button id="btnStart" type="button"  class="btn btn-success" onclick="location.href='@Url.Action("Save", "Add")'"  >Create Shipment</button></div>
+                <table class="table table-hover table-responsive" id="dtBasicExample">
                     <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.SenderId)
+                        </th>
                         <th>
                             @Html.DisplayNameFor(model => model.SenderName)
                         </th>
@@ -58,9 +52,13 @@
                         </th>
                         <th>@Html.DisplayNameFor(model => model.Action)</th>
                     </tr>
-                    @foreach (var item in Model)
+                    @foreach (ShippmentWebApplication.Models.Sender item in Model)
                     {
                         <tr>
+                            <td>
+                               
+                   @Html.DisplayFor(modelItem => item.SenderId)
+                            </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.SenderName)
                             </td>
@@ -77,114 +75,82 @@
                                 @Html.DisplayFor(modelItem => item.Shipment)
                             </td>
                             <td>
-                                @Html.ActionLink("Delete", "Delete", new { id = item.SenderId })
-                            </td>
+                                <div class="delete-section">
+                                    <a class="delete-link" href="@Url.Action("Delete", new {id = item.SenderId})">Delete</a>
+                                    <div class="btn btn-primary delete-confirm" style="display:none" data-delete-id="@item.SenderId">Confirm Delete</div>
+                                </div>                            </td>
                         </tr>
                     }
                 </table>
+                <ul class="pager">
+                    <li class="previous"><a href="#">Previous</a></li>
+                    <li class="next"><a href="#">Next</a></li>
+                </ul>
             </div>
         </div>
     </div>
-    @*@using (Html.BeginForm("Index", "Home", FormMethod.Post))
-        {*@
-    <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="formModalLabel">Create Shipment</h3>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-               
-                    @*<div class="form-group">
-                        @Html.LabelFor(model => model.SenderName)
-                        @Html.TextBoxFor(model => model.SenderName, new { @class = "form-control" })
-                    </div>
+    <script type="text/javascript">
+       
+    $(function () {
+        $("a.delete-link").click(function () {
+            var deleteLink = $(this);
+            deleteLink.hide();
+            var confirmButton = deleteLink.siblings(".delete-confirm");
+            confirmButton.show();
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Description)
-                        @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
-                    </div>
+            var cancelDelete =  function () {
+                removeEvents();
+                showDeleteLink();
+            };
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.RecipientAddress)
-                        @Html.TextBoxFor(model => model.RecipientAddress, new { @class = "form-control" })
-                    </div>
+            var deleteItem = function () {
+                removeEvents();
+                confirmButton.hide();
+                $.post(
+                    '@Url.Action("Delete")',
+                    AddAntiForgeryToken({ id: confirmButton.attr('data-delete-id') }))
+                   .done(function () {
+                       var parentRow = deleteLink.parents("tr:first");
+                       parentRow.fadeOut('fast', function () {
+                           parentRow.remove();
+                       });
+                   }).fail(function (data) {
+                       alert("error");
+                   });
+                return false;
+            };
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Expedited)
-                        @Html.TextBoxFor(model => model.Expedited, new { @class = "form-control" })
-                    </div>
+            var removeEvents = function () {
+                confirmButton.off("click", deleteItem);
+                $(document).on("click", cancelDelete);
+                $(document).off("keypress", onKeyPress);
+            };
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Shipment)
-                        @Html.TextBoxFor(model => model.Shipment, new { @class = "form-control" })
-                    </div>
+            var showDeleteLink = function () {
+                confirmButton.hide();
+                deleteLink.show();
+            };
 
-                    @Html.HiddenFor(model => model.SenderId)
+            var onKeyPress = function (e) {
+                //Cancel if escape key pressed
+                if (e.which == 27) {
+                    cancelDelete();
+                }
+            };
 
-                    var c = @Model.SenderId > 0 ? "Update" : "Save";*@
-                    <button type="submit" class="btn btn-primary"></button>
-                  
-                <form id="formAwesome">
-                    <div class="modal-body">
-                        <div class="form-group row">
-                            <label for="firstName" class="col-sm-6 col-form-label">
-                                Sender Name
-                            </label>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" id="firstName" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="desc" class="col-sm-6 col-form-label">
-                                Description
-                            </label>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" id="lastName" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="Address" class="col-sm-6 col-form-label">
-                                Recipient Address 
-                            </label>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" id="email" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="expedited" class="col-sm-6 col-form-label">
-                                Expedited
-                            </label>
-                            <div class="col-sm-6">
-                                <select class="form-control" id="awesomeness">
-                                    <option>True</option>
-                                    <option>False</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="shipment" class="col-sm-6 col-form-label">
-                                Shipment Type
-                            </label>
-                            <div class="col-sm-6">
-                                <select class="form-control" id="awesomeness">
-                                    <option>LTL</option>
-                                    <option>Volume LTL</option>
-                                    <option>Truckload</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-@*}*@
+            confirmButton.on("click", deleteItem);
+            $(document).on("click", cancelDelete);
+            $(document).on("keypress", onKeyPress);
+
+            return false;
+        });
+
+        AddAntiForgeryToken = function (data) {
+            data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+            return data;
+        };
+    });
+    </script>
+    
 </body>
 </html>

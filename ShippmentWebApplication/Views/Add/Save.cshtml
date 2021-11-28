@@ -1,0 +1,110 @@
+﻿
+@{
+    Layout = null;
+}
+@model ShippmentWebApplication.Models.Sender
+@{
+    ViewBag.Title = "Add";
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <title>Save</title>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.bundle.js'></script>
+    
+</head>
+<body>
+    @using (Html.BeginForm("SaveSender", "Add", FormMethod.Post))
+    {
+        <div class="panel-group">
+            <div class="panel panel-danger">
+                <div class="panel-heading" style="text-align:center">
+                    <h2>Create New Shipment </h2>
+                </div>
+                <div class="panel-body">
+                    
+                    <table style="text-align:center;width:90%" cellpadding="10">
+                       
+                        <tr>
+                            <td >Sender Name: </td>
+                            <td >
+                                @Html.TextBoxFor(model => model.SenderName, new { @class = "form-control", id="name"})
+                            </td>
+                        </tr>
+                        
+                        <tr >
+                            <td>Description: </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.Description, new { @class = "form-control" , id="description"})
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Recipient Address: </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.RecipientAddress, new { @class = "form-control", id="address" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Expedited: </td>
+                            <td>
+                                @Html.DropDownListFor(model => model.Expedited, new List<SelectListItem>
+                   { new SelectListItem{Text="True", Value="True"},
+                     new SelectListItem{Text="False", Value="False"} },
+                     "Please select", new { @class = "form-control",id="ddlexp" })
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Shipment: </td>
+                            <td>
+                                @Html.DropDownListFor(model => model.Shipment, new List<SelectListItem>
+                   { new SelectListItem{Text="LTL", Value="LTL"},
+                     new SelectListItem{Text="Volume LTL", Value="Volume LTL"},
+                            new SelectListItem{Text="Truckload", Value="Truckload"}},
+                               "Please select", new { @class = "form-control" ,id="ddlshipment"})
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td style="float:right"><br/><input type="submit" class="btn btn-success" onclick="return ValidateTextBox()" value="Submit" /></td>
+                        </tr>
+                    </table>
+                    </div>
+                </div>
+            </div>
+                    }
+    <script type="text/javascript">
+    function ValidateTextBox() {
+        if (document.getElementById("name").value.trim() == "") {
+            alert("Please Enter Sender Name!");
+            return false;
+        }
+        if (document.getElementById("description").value.trim() == "") {
+            alert("Please Enter description!");
+                return false;
+        }
+        if (document.getElementById("address").value.trim() == "") {
+            alert("Please Enter Recipient Address!");
+            return false;
+        }
+        if (document.getElementById("ddlexp").value.trim() == "") {
+            alert("Please Enter Expedited!");
+            return false;
+        }
+        if (document.getElementById("ddlshipment").value.trim() == "") {
+            alert("Please Enter Shipment!");
+            return false;
+        }
+    };
+    </script>
+    </body>
+</html>

@@ -127,6 +127,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Js\Base.js" />
     <Content Include="Global.asax" />
     <Content Include="Models\SenderDataModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -144,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AddController.cs" />
     <Compile Include="Controllers\SenderController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -183,6 +185,7 @@
     </Content>
     <Content Include="Views\Sender\Index.cshtml" />
     <Content Include="Views\View.cshtml" />
+    <Content Include="Views\Add\Save.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
